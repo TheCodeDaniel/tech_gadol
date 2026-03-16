@@ -79,8 +79,7 @@ void main() {
     });
 
     test('filters out invalid image URLs', () {
-      final json = _validProductJson()
-        ..['images'] = ['https://example.com/valid.jpg', 'not-a-url', ''];
+      final json = _validProductJson()..['images'] = ['https://example.com/valid.jpg', 'not-a-url', ''];
       final product = ProductModel.fromJson(json);
 
       expect(product.images, hasLength(1));
@@ -163,12 +162,7 @@ void main() {
     });
 
     test('handles empty products list', () {
-      final json = {
-        'products': [],
-        'total': 0,
-        'skip': 0,
-        'limit': 20,
-      };
+      final json = {'products': [], 'total': 0, 'skip': 0, 'limit': 20};
       final response = ProductsResponse.fromJson(json);
 
       expect(response.products, isEmpty);
@@ -178,23 +172,20 @@ void main() {
 }
 
 Map<String, dynamic> _validProductJson() => {
-      'id': 1,
-      'title': 'iPhone 9',
-      'description': 'An apple mobile',
-      'price': 549,
-      'discountPercentage': 12.96,
-      'rating': 4.69,
-      'stock': 94,
-      'brand': 'Apple',
-      'category': 'smartphones',
-      'thumbnail': 'https://example.com/thumb.jpg',
-      'images': [
-        'https://example.com/img1.jpg',
-        'https://example.com/img2.jpg',
-      ],
-      'availabilityStatus': 'In Stock',
-      'warrantyInformation': '1 year warranty',
-      'shippingInformation': 'Ships in 1 week',
-      'returnPolicy': '30 day return',
-      'tags': ['phone', 'apple'],
-    };
+  'id': 1,
+  'title': 'iPhone 9',
+  'description': 'An apple mobile',
+  'price': 549,
+  'discountPercentage': 12.96,
+  'rating': 4.69,
+  'stock': 94,
+  'brand': 'Apple',
+  'category': 'smartphones',
+  'thumbnail': 'https://example.com/thumb.jpg',
+  'images': ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'],
+  'availabilityStatus': 'In Stock',
+  'warrantyInformation': '1 year warranty',
+  'shippingInformation': 'Ships in 1 week',
+  'returnPolicy': '30 day return',
+  'tags': ['phone', 'apple'],
+};

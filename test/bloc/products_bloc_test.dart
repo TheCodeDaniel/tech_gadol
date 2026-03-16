@@ -38,12 +38,7 @@ void main() {
     ),
   );
 
-  final testResponse = ProductsResponse(
-    products: testProducts,
-    total: 50,
-    skip: 0,
-    limit: 20,
-  );
+  final testResponse = ProductsResponse(products: testProducts, total: 50, skip: 0, limit: 20);
 
   final testResult = ProductsResult(response: testResponse, isFromCache: false);
 
@@ -51,15 +46,17 @@ void main() {
     blocTest<ProductsBloc, ProductsState>(
       'emits [loading, loaded] when products are fetched successfully',
       setUp: () {
-        when(() => mockRepository.getProducts(
-              limit: any(named: 'limit'),
-              skip: any(named: 'skip'),
-              forceRefresh: any(named: 'forceRefresh'),
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => testResult);
-        when(() => mockRepository.getCategories(
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => ['electronics', 'clothing']);
+        when(
+          () => mockRepository.getProducts(
+            limit: any(named: 'limit'),
+            skip: any(named: 'skip'),
+            forceRefresh: any(named: 'forceRefresh'),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => testResult);
+        when(
+          () => mockRepository.getCategories(cancelToken: any(named: 'cancelToken')),
+        ).thenAnswer((_) async => ['electronics', 'clothing']);
       },
       build: () => ProductsBloc(repository: mockRepository),
       act: (bloc) => bloc.add(const LoadProducts()),
@@ -79,15 +76,15 @@ void main() {
     blocTest<ProductsBloc, ProductsState>(
       'emits [loading, error] when fetch fails',
       setUp: () {
-        when(() => mockRepository.getProducts(
-              limit: any(named: 'limit'),
-              skip: any(named: 'skip'),
-              forceRefresh: any(named: 'forceRefresh'),
-              cancelToken: any(named: 'cancelToken'),
-            )).thenThrow(Exception('Network error'));
-        when(() => mockRepository.getCategories(
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => []);
+        when(
+          () => mockRepository.getProducts(
+            limit: any(named: 'limit'),
+            skip: any(named: 'skip'),
+            forceRefresh: any(named: 'forceRefresh'),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenThrow(Exception('Network error'));
+        when(() => mockRepository.getCategories(cancelToken: any(named: 'cancelToken'))).thenAnswer((_) async => []);
       },
       build: () => ProductsBloc(repository: mockRepository),
       act: (bloc) => bloc.add(const LoadProducts()),
@@ -104,28 +101,22 @@ void main() {
     blocTest<ProductsBloc, ProductsState>(
       'appends products when loading more',
       setUp: () {
-        when(() => mockRepository.getProducts(
-              limit: any(named: 'limit'),
-              skip: any(named: 'skip'),
-              forceRefresh: any(named: 'forceRefresh'),
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => ProductsResult(
-              response: ProductsResponse(
-                products: testProducts,
-                total: 50,
-                skip: 5,
-                limit: 20,
-              ),
-              isFromCache: false,
-            ));
+        when(
+          () => mockRepository.getProducts(
+            limit: any(named: 'limit'),
+            skip: any(named: 'skip'),
+            forceRefresh: any(named: 'forceRefresh'),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer(
+          (_) async => ProductsResult(
+            response: ProductsResponse(products: testProducts, total: 50, skip: 5, limit: 20),
+            isFromCache: false,
+          ),
+        );
       },
       build: () => ProductsBloc(repository: mockRepository),
-      seed: () => ProductsState(
-        status: ProductsStatus.loaded,
-        products: testProducts,
-        currentSkip: 5,
-        total: 50,
-      ),
+      seed: () => ProductsState(status: ProductsStatus.loaded, products: testProducts, currentSkip: 5, total: 50),
       act: (bloc) => bloc.add(const LoadMoreProducts()),
       expect: () => [
         isA<ProductsState>().having((s) => s.isLoadingMore, 'isLoadingMore', true),
@@ -138,11 +129,7 @@ void main() {
     blocTest<ProductsBloc, ProductsState>(
       'does not load more when hasReachedMax is true',
       build: () => ProductsBloc(repository: mockRepository),
-      seed: () => ProductsState(
-        status: ProductsStatus.loaded,
-        products: testProducts,
-        hasReachedMax: true,
-      ),
+      seed: () => ProductsState(status: ProductsStatus.loaded, products: testProducts, hasReachedMax: true),
       act: (bloc) => bloc.add(const LoadMoreProducts()),
       expect: () => [],
     );
@@ -152,24 +139,21 @@ void main() {
     blocTest<ProductsBloc, ProductsState>(
       'sets selected category and reloads products',
       setUp: () {
-        when(() => mockRepository.getProductsByCategory(
-              category: any(named: 'category'),
-              limit: any(named: 'limit'),
-              skip: any(named: 'skip'),
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => testResponse);
+        when(
+          () => mockRepository.getProductsByCategory(
+            category: any(named: 'category'),
+            limit: any(named: 'limit'),
+            skip: any(named: 'skip'),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => testResponse);
       },
       build: () => ProductsBloc(repository: mockRepository),
-      seed: () => const ProductsState(
-        status: ProductsStatus.loaded,
-        categories: ['electronics', 'clothing'],
-      ),
+      seed: () => const ProductsState(status: ProductsStatus.loaded, categories: ['electronics', 'clothing']),
       act: (bloc) => bloc.add(const SelectCategory('electronics')),
       expect: () => [
-        isA<ProductsState>().having(
-            (s) => s.selectedCategory, 'selectedCategory', 'electronics'),
-        isA<ProductsState>().having(
-            (s) => s.status, 'status', ProductsStatus.loading),
+        isA<ProductsState>().having((s) => s.selectedCategory, 'selectedCategory', 'electronics'),
+        isA<ProductsState>().having((s) => s.status, 'status', ProductsStatus.loading),
         isA<ProductsState>()
             .having((s) => s.status, 'status', ProductsStatus.loaded)
             .having((s) => s.selectedCategory, 'selectedCategory', 'electronics'),
@@ -179,15 +163,17 @@ void main() {
     blocTest<ProductsBloc, ProductsState>(
       'deselects category when same category is tapped again',
       setUp: () {
-        when(() => mockRepository.getProducts(
-              limit: any(named: 'limit'),
-              skip: any(named: 'skip'),
-              forceRefresh: any(named: 'forceRefresh'),
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => testResult);
-        when(() => mockRepository.getCategories(
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => ['electronics']);
+        when(
+          () => mockRepository.getProducts(
+            limit: any(named: 'limit'),
+            skip: any(named: 'skip'),
+            forceRefresh: any(named: 'forceRefresh'),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => testResult);
+        when(
+          () => mockRepository.getCategories(cancelToken: any(named: 'cancelToken')),
+        ).thenAnswer((_) async => ['electronics']);
       },
       build: () => ProductsBloc(repository: mockRepository),
       seed: () => const ProductsState(
@@ -197,12 +183,9 @@ void main() {
       ),
       act: (bloc) => bloc.add(const SelectCategory('electronics')),
       expect: () => [
-        isA<ProductsState>()
-            .having((s) => s.selectedCategory, 'selectedCategory', isNull),
-        isA<ProductsState>()
-            .having((s) => s.status, 'status', ProductsStatus.loading),
-        isA<ProductsState>()
-            .having((s) => s.status, 'status', ProductsStatus.loaded),
+        isA<ProductsState>().having((s) => s.selectedCategory, 'selectedCategory', isNull),
+        isA<ProductsState>().having((s) => s.status, 'status', ProductsStatus.loading),
+        isA<ProductsState>().having((s) => s.status, 'status', ProductsStatus.loaded),
       ],
     );
   });
@@ -211,32 +194,25 @@ void main() {
     blocTest<ProductsBloc, ProductsState>(
       'selects product from existing list',
       build: () => ProductsBloc(repository: mockRepository),
-      seed: () => ProductsState(
-        status: ProductsStatus.loaded,
-        products: testProducts,
-      ),
+      seed: () => ProductsState(status: ProductsStatus.loaded, products: testProducts),
       act: (bloc) => bloc.add(const SelectProduct(1)),
-      expect: () => [
-        isA<ProductsState>().having(
-            (s) => s.selectedProduct?.id, 'selectedProduct.id', 1),
-      ],
+      expect: () => [isA<ProductsState>().having((s) => s.selectedProduct?.id, 'selectedProduct.id', 1)],
     );
 
     blocTest<ProductsBloc, ProductsState>(
       'fetches product by id when not in list',
       setUp: () {
-        when(() => mockRepository.getProductById(
-              id: any(named: 'id'),
-              cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => testProducts.first);
+        when(
+          () => mockRepository.getProductById(
+            id: any(named: 'id'),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => testProducts.first);
       },
       build: () => ProductsBloc(repository: mockRepository),
       seed: () => const ProductsState(status: ProductsStatus.loaded),
       act: (bloc) => bloc.add(const SelectProduct(1)),
-      expect: () => [
-        isA<ProductsState>().having(
-            (s) => s.selectedProduct?.id, 'selectedProduct.id', 1),
-      ],
+      expect: () => [isA<ProductsState>().having((s) => s.selectedProduct?.id, 'selectedProduct.id', 1)],
     );
   });
 }

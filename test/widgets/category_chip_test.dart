@@ -5,20 +5,11 @@ import 'package:tech_gadol/core/theme/dark_theme.dart';
 import 'package:tech_gadol/core/widgets/category_chip.dart';
 
 void main() {
-  Widget buildWidget({
-    String label = 'smart-phones',
-    bool isSelected = false,
-    VoidCallback? onTap,
-    ThemeData? theme,
-  }) {
+  Widget buildWidget({String label = 'smart-phones', bool isSelected = false, VoidCallback? onTap, ThemeData? theme}) {
     return MaterialApp(
       theme: theme ?? LightTheme.themeData,
       home: Scaffold(
-        body: CategoryChip(
-          label: label,
-          isSelected: isSelected,
-          onTap: onTap ?? () {},
-        ),
+        body: CategoryChip(label: label, isSelected: isSelected, onTap: onTap ?? () {}),
       ),
     );
   }

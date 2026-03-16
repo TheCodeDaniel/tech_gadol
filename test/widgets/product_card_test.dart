@@ -25,19 +25,11 @@ void main() {
     tags: [],
   );
 
-  Widget buildWidget({
-    ProductModel? product,
-    bool isSelected = false,
-    ThemeData? theme,
-  }) {
+  Widget buildWidget({ProductModel? product, bool isSelected = false, ThemeData? theme}) {
     return MaterialApp(
       theme: theme ?? LightTheme.themeData,
       home: Scaffold(
-        body: ProductCard(
-          product: product ?? testProduct,
-          isSelected: isSelected,
-          onTap: () {},
-        ),
+        body: ProductCard(product: product ?? testProduct, isSelected: isSelected, onTap: () {}),
       ),
     );
   }
@@ -106,15 +98,14 @@ void main() {
 
     testWidgets('calls onTap when tapped', (tester) async {
       bool tapped = false;
-      await tester.pumpWidget(MaterialApp(
-        theme: LightTheme.themeData,
-        home: Scaffold(
-          body: ProductCard(
-            product: testProduct,
-            onTap: () => tapped = true,
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: LightTheme.themeData,
+          home: Scaffold(
+            body: ProductCard(product: testProduct, onTap: () => tapped = true),
           ),
         ),
-      ));
+      );
       await tester.tap(find.byType(ProductCard));
       expect(tapped, true);
     });
