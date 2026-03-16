@@ -6,6 +6,7 @@ import 'package:tech_gadol/core/widgets/empty_state.dart';
 import 'package:tech_gadol/core/widgets/error_state.dart';
 import 'package:tech_gadol/core/widgets/product_card.dart';
 import 'package:tech_gadol/core/widgets/shimmer_loading.dart';
+import 'package:tech_gadol/core/widgets/staggered_list_item.dart';
 import 'package:tech_gadol/features/products/presentation/bloc/products_bloc.dart';
 import 'package:tech_gadol/features/products/presentation/bloc/products_events.dart';
 import 'package:tech_gadol/features/products/presentation/bloc/products_state.dart';
@@ -15,7 +16,12 @@ class ProductListScreen extends StatefulWidget {
   final int? selectedProductId;
   final ValueChanged<int>? onProductSelected;
 
-  const ProductListScreen({super.key, this.isWideLayout = false, this.selectedProductId, this.onProductSelected});
+  const ProductListScreen({
+    super.key,
+    this.isWideLayout = false,
+    this.selectedProductId,
+    this.onProductSelected,
+  });
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -55,6 +61,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Cache indicator banner
+        BlocBuilder<ProductsBloc, ProductsState>(
+          buildWhen: (prev, curr) => prev.isFromCache != curr.isFromCache,
+          builder: (context, state) {
+            if (!state.isFromCache) return const SizedBox.shrink();
+            return _CacheBanner(
+              onRefresh: () {
+                context.read<ProductsBloc>().add(const RefreshProducts());
+              },
+            );
+          },
+        ),
         BlocBuilder<ProductsBloc, ProductsState>(
           buildWhen: (prev, curr) => prev.searchQuery != curr.searchQuery,
           builder: (context, state) {
@@ -80,11 +98,58 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 }
 
+class _CacheBanner extends StatelessWidget {
+  final VoidCallback onRefresh;
+
+  const _CacheBanner({required this.onRefresh});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      color: theme.colorScheme.secondaryContainer,
+      child: Row(
+        children: [
+          Icon(
+            Icons.offline_bolt_outlined,
+            size: 16,
+            color: theme.colorScheme.onSecondaryContainer,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Showing cached data',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSecondaryContainer,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: onRefresh,
+            child: Text(
+              'Refresh',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSecondaryContainer,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _CategoriesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductsBloc, ProductsState>(
-      buildWhen: (prev, curr) => prev.categories != curr.categories || prev.selectedCategory != curr.selectedCategory,
+      buildWhen: (prev, curr) =>
+          prev.categories != curr.categories ||
+          prev.selectedCategory != curr.selectedCategory,
       builder: (context, state) {
         if (state.categories.isEmpty) return const SizedBox.shrink();
         return SizedBox(
@@ -142,28 +207,36 @@ class _ProductsList extends StatelessWidget {
             if (state.products.isEmpty) {
               return const EmptyState();
             }
-            return ListView.builder(
-              controller: scrollController,
-              padding: const EdgeInsets.only(bottom: 16),
-              itemCount: state.products.length + (state.isLoadingMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index >= state.products.length) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                final product = state.products[index];
-                return ProductCard(
-                  product: product,
-                  isSelected: isWideLayout && product.id == selectedProductId,
-                  onTap: () {
-                    if (onProductSelected != null) {
-                      onProductSelected!(product.id);
-                    }
-                  },
-                );
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<ProductsBloc>().add(const RefreshProducts());
               },
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.only(bottom: 16),
+                itemCount: state.products.length + (state.isLoadingMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index >= state.products.length) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  final product = state.products[index];
+                  return StaggeredListItem(
+                    index: index,
+                    child: ProductCard(
+                      product: product,
+                      isSelected: isWideLayout && product.id == selectedProductId,
+                      onTap: () {
+                        if (onProductSelected != null) {
+                          onProductSelected!(product.id);
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
             );
         }
       },

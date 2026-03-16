@@ -15,6 +15,7 @@ class ProductsState extends Equatable {
   final int currentSkip;
   final int total;
   final ProductModel? selectedProduct;
+  final bool isFromCache;
 
   const ProductsState({
     this.status = ProductsStatus.initial,
@@ -28,6 +29,7 @@ class ProductsState extends Equatable {
     this.currentSkip = 0,
     this.total = 0,
     this.selectedProduct,
+    this.isFromCache = false,
   });
 
   ProductsState copyWith({
@@ -42,6 +44,7 @@ class ProductsState extends Equatable {
     int? currentSkip,
     int? total,
     ProductModel? Function()? selectedProduct,
+    bool? isFromCache,
   }) {
     return ProductsState(
       status: status ?? this.status,
@@ -55,6 +58,7 @@ class ProductsState extends Equatable {
       currentSkip: currentSkip ?? this.currentSkip,
       total: total ?? this.total,
       selectedProduct: selectedProduct != null ? selectedProduct() : this.selectedProduct,
+      isFromCache: isFromCache ?? this.isFromCache,
     );
   }
 
@@ -71,5 +75,6 @@ class ProductsState extends Equatable {
     currentSkip,
     total,
     selectedProduct,
+    isFromCache,
   ];
 }

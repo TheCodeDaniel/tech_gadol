@@ -45,6 +45,8 @@ void main() {
     limit: 20,
   );
 
+  final testResult = ProductsResult(response: testResponse, isFromCache: false);
+
   group('LoadProducts', () {
     blocTest<ProductsBloc, ProductsState>(
       'emits [loading, loaded] when products are fetched successfully',
@@ -52,8 +54,9 @@ void main() {
         when(() => mockRepository.getProducts(
               limit: any(named: 'limit'),
               skip: any(named: 'skip'),
+              forceRefresh: any(named: 'forceRefresh'),
               cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => testResponse);
+            )).thenAnswer((_) async => testResult);
         when(() => mockRepository.getCategories(
               cancelToken: any(named: 'cancelToken'),
             )).thenAnswer((_) async => ['electronics', 'clothing']);
@@ -79,6 +82,7 @@ void main() {
         when(() => mockRepository.getProducts(
               limit: any(named: 'limit'),
               skip: any(named: 'skip'),
+              forceRefresh: any(named: 'forceRefresh'),
               cancelToken: any(named: 'cancelToken'),
             )).thenThrow(Exception('Network error'));
         when(() => mockRepository.getCategories(
@@ -103,12 +107,16 @@ void main() {
         when(() => mockRepository.getProducts(
               limit: any(named: 'limit'),
               skip: any(named: 'skip'),
+              forceRefresh: any(named: 'forceRefresh'),
               cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => ProductsResponse(
-              products: testProducts,
-              total: 50,
-              skip: 5,
-              limit: 20,
+            )).thenAnswer((_) async => ProductsResult(
+              response: ProductsResponse(
+                products: testProducts,
+                total: 50,
+                skip: 5,
+                limit: 20,
+              ),
+              isFromCache: false,
             ));
       },
       build: () => ProductsBloc(repository: mockRepository),
@@ -158,13 +166,10 @@ void main() {
       ),
       act: (bloc) => bloc.add(const SelectCategory('electronics')),
       expect: () => [
-        // SelectCategory emits state with category
         isA<ProductsState>().having(
             (s) => s.selectedCategory, 'selectedCategory', 'electronics'),
-        // Then LoadProducts fires -> loading
         isA<ProductsState>().having(
             (s) => s.status, 'status', ProductsStatus.loading),
-        // Then loaded
         isA<ProductsState>()
             .having((s) => s.status, 'status', ProductsStatus.loaded)
             .having((s) => s.selectedCategory, 'selectedCategory', 'electronics'),
@@ -177,8 +182,9 @@ void main() {
         when(() => mockRepository.getProducts(
               limit: any(named: 'limit'),
               skip: any(named: 'skip'),
+              forceRefresh: any(named: 'forceRefresh'),
               cancelToken: any(named: 'cancelToken'),
-            )).thenAnswer((_) async => testResponse);
+            )).thenAnswer((_) async => testResult);
         when(() => mockRepository.getCategories(
               cancelToken: any(named: 'cancelToken'),
             )).thenAnswer((_) async => ['electronics']);

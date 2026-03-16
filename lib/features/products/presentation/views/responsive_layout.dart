@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tech_gadol/core/routing/app_routes.dart';
 import 'package:tech_gadol/features/products/presentation/views/product_detail_screen.dart';
 import 'package:tech_gadol/features/products/presentation/views/product_list_screen.dart';
 
@@ -29,7 +30,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
     return _NarrowLayout(
       onProductSelected: (id) {
-        context.go('/products/$id');
+        context.go(AppRoutes.productById(id));
       },
     );
   }
@@ -43,7 +44,16 @@ class _NarrowLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Products')),
+      appBar: AppBar(
+        title: const Text('Products'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.palette_outlined),
+            tooltip: 'Component Showcase',
+            onPressed: () => context.push(AppRoutes.showcase),
+          ),
+        ],
+      ),
       body: ProductListScreen(onProductSelected: onProductSelected),
     );
   }
@@ -59,7 +69,16 @@ class _WideLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Products')),
+      appBar: AppBar(
+        title: const Text('Products'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.palette_outlined),
+            tooltip: 'Component Showcase',
+            onPressed: () => context.push(AppRoutes.showcase),
+          ),
+        ],
+      ),
       body: Row(
         children: [
           SizedBox(

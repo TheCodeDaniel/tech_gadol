@@ -109,15 +109,31 @@ class _DetailBody extends StatelessWidget {
                 ? PageView.builder(
                     itemCount: product.images.length,
                     itemBuilder: (context, index) {
-                      return CachedImage(
+                      final image = CachedImage(
                         imageUrl: product.images[index],
                         width: double.infinity,
                         height: 300,
                         fit: BoxFit.contain,
                       );
+                      // Hero only on first image
+                      if (index == 0) {
+                        return Hero(
+                          tag: 'product_image_${product.id}',
+                          child: image,
+                        );
+                      }
+                      return image;
                     },
                   )
-                : CachedImage(imageUrl: product.thumbnail, width: double.infinity, height: 300, fit: BoxFit.contain),
+                : Hero(
+                    tag: 'product_image_${product.id}',
+                    child: CachedImage(
+                      imageUrl: product.thumbnail,
+                      width: double.infinity,
+                      height: 300,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
           ),
           // Image page indicator
           if (product.images.length > 1)

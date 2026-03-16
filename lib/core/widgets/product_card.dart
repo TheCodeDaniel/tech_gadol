@@ -8,12 +8,14 @@ class ProductCard extends StatelessWidget {
   final ProductModel product;
   final VoidCallback onTap;
   final bool isSelected;
+  final bool enableHero;
 
   const ProductCard({
     super.key,
     required this.product,
     required this.onTap,
     this.isSelected = false,
+    this.enableHero = true,
   });
 
   @override
@@ -34,12 +36,7 @@ class ProductCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CachedImage(
-                imageUrl: product.thumbnail,
-                width: 100,
-                height: 100,
-                borderRadius: BorderRadius.circular(8),
-              ),
+              _buildThumbnail(),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -75,6 +72,22 @@ class ProductCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildThumbnail() {
+    final image = CachedImage(
+      imageUrl: product.thumbnail,
+      width: 100,
+      height: 100,
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    if (!enableHero) return image;
+
+    return Hero(
+      tag: 'product_image_${product.id}',
+      child: image,
     );
   }
 }

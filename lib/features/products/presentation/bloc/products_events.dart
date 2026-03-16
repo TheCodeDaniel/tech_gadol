@@ -35,6 +35,10 @@ class ClearFilters extends ProductsEvent {
   const ClearFilters();
 }
 
+class RefreshProducts extends ProductsEvent {
+  const RefreshProducts();
+}
+
 class SelectProduct extends ProductsEvent {
   final int productId;
   const SelectProduct(this.productId);
