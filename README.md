@@ -138,4 +138,13 @@ With more time, I would improve:
 
 ## 5. AI Tools Usage
 
+The AI mainly used was claude,
+it was a fair experience, used to help me cut down development time alot,
+but it made the following mistakes:
+- Wrong theme usage on the app
+- Incomplete error handling on API calls
+- Wrong use of Hero widgets that threw exceptions all of the console
+
+So, for some, I had to manually edit or re-query giving out specific guideliness on how to edit and go about them.
+
 <!-- Fill in your own experience here -->
