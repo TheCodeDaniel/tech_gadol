@@ -44,9 +44,7 @@ class _NarrowLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Products')),
-      body: ProductListScreen(
-        onProductSelected: onProductSelected,
-      ),
+      body: ProductListScreen(onProductSelected: onProductSelected),
     );
   }
 }
@@ -55,10 +53,7 @@ class _WideLayout extends StatelessWidget {
   final int? selectedProductId;
   final ValueChanged<int> onProductSelected;
 
-  const _WideLayout({
-    required this.selectedProductId,
-    required this.onProductSelected,
-  });
+  const _WideLayout({required this.selectedProductId, required this.onProductSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -83,17 +78,11 @@ class _WideLayout extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.touch_app_outlined,
-                          size: 64,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
+                        Icon(Icons.touch_app_outlined, size: 64, color: theme.colorScheme.onSurfaceVariant),
                         const SizedBox(height: 16),
                         Text(
                           'Select a product to view details',
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
+                          style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                         ),
                       ],
                     ),

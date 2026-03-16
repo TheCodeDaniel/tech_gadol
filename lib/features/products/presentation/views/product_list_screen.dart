@@ -15,12 +15,7 @@ class ProductListScreen extends StatefulWidget {
   final int? selectedProductId;
   final ValueChanged<int>? onProductSelected;
 
-  const ProductListScreen({
-    super.key,
-    this.isWideLayout = false,
-    this.selectedProductId,
-    this.onProductSelected,
-  });
+  const ProductListScreen({super.key, this.isWideLayout = false, this.selectedProductId, this.onProductSelected});
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -72,12 +67,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
           },
         ),
         _CategoriesRow(),
-        Expanded(child: _ProductsList(
-          scrollController: _scrollController,
-          isWideLayout: widget.isWideLayout,
-          selectedProductId: widget.selectedProductId,
-          onProductSelected: widget.onProductSelected,
-        )),
+        Expanded(
+          child: _ProductsList(
+            scrollController: _scrollController,
+            isWideLayout: widget.isWideLayout,
+            selectedProductId: widget.selectedProductId,
+            onProductSelected: widget.onProductSelected,
+          ),
+        ),
       ],
     );
   }
@@ -87,9 +84,7 @@ class _CategoriesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductsBloc, ProductsState>(
-      buildWhen: (prev, curr) =>
-          prev.categories != curr.categories ||
-          prev.selectedCategory != curr.selectedCategory,
+      buildWhen: (prev, curr) => prev.categories != curr.categories || prev.selectedCategory != curr.selectedCategory,
       builder: (context, state) {
         if (state.categories.isEmpty) return const SizedBox.shrink();
         return SizedBox(

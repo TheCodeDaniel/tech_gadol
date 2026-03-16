@@ -39,9 +39,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       builder: (context, state) {
         final product = state.selectedProduct;
         if (product == null) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
         return Scaffold(
           appBar: AppBar(title: Text(product.title)),
@@ -119,12 +117,7 @@ class _DetailBody extends StatelessWidget {
                       );
                     },
                   )
-                : CachedImage(
-                    imageUrl: product.thumbnail,
-                    width: double.infinity,
-                    height: 300,
-                    fit: BoxFit.contain,
-                  ),
+                : CachedImage(imageUrl: product.thumbnail, width: double.infinity, height: 300, fit: BoxFit.contain),
           ),
           // Image page indicator
           if (product.images.length > 1)
@@ -133,16 +126,9 @@ class _DetailBody extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.swipe,
-                    size: 16,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                  Icon(Icons.swipe, size: 16, color: theme.colorScheme.onSurfaceVariant),
                   const SizedBox(width: 4),
-                  Text(
-                    '${product.images.length} images',
-                    style: theme.textTheme.bodySmall,
-                  ),
+                  Text('${product.images.length} images', style: theme.textTheme.bodySmall),
                 ],
               ),
             ),
@@ -155,9 +141,10 @@ class _DetailBody extends StatelessWidget {
                 Text(product.title, style: theme.textTheme.headlineMedium),
                 const SizedBox(height: 4),
                 // Brand
-                Text(product.brand, style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                )),
+                Text(
+                  product.brand,
+                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ),
                 const SizedBox(height: 16),
                 // Price
                 PriceTag(product: product, large: true),
@@ -172,10 +159,7 @@ class _DetailBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Category
-                Chip(
-                  label: Text(product.category),
-                  avatar: const Icon(Icons.category, size: 16),
-                ),
+                Chip(label: Text(product.category), avatar: const Icon(Icons.category, size: 16)),
                 const SizedBox(height: 16),
                 // Description
                 Text('Description', style: theme.textTheme.titleMedium),
@@ -189,20 +173,11 @@ class _DetailBody extends StatelessWidget {
                   const Divider(),
                   const SizedBox(height: 16),
                   if (product.warrantyInformation.isNotEmpty)
-                    _InfoRow(
-                      icon: Icons.verified_user_outlined,
-                      label: product.warrantyInformation,
-                    ),
+                    _InfoRow(icon: Icons.verified_user_outlined, label: product.warrantyInformation),
                   if (product.shippingInformation.isNotEmpty)
-                    _InfoRow(
-                      icon: Icons.local_shipping_outlined,
-                      label: product.shippingInformation,
-                    ),
+                    _InfoRow(icon: Icons.local_shipping_outlined, label: product.shippingInformation),
                   if (product.returnPolicy.isNotEmpty)
-                    _InfoRow(
-                      icon: Icons.assignment_return_outlined,
-                      label: product.returnPolicy,
-                    ),
+                    _InfoRow(icon: Icons.assignment_return_outlined, label: product.returnPolicy),
                 ],
               ],
             ),
@@ -224,16 +199,10 @@ class _StockBadge extends StatelessWidget {
     final color = product.isInStock ? Colors.green : Colors.red;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
       child: Text(
         product.isInStock ? 'In Stock (${product.stock})' : 'Out of Stock',
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w600,
-        ),
+        style: theme.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -254,9 +223,7 @@ class _InfoRow extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: theme.colorScheme.primary),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(label, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
