@@ -222,8 +222,8 @@ const _noDiscountProduct = ProductModel(
   rating: 4.9,
   stock: 100,
   brand: 'Apple',
-  thumbnail:
-      'https://cdn.dummyjson.com/products/images/laptops/Apple%20MacBook%20Pro%2014%20Inch%20Space%20Black/thumbnail.png',
+  thumbnail: 'https://cdn.dummyjson.com/products/images/'
+      'laptops/Apple%20MacBook%20Pro%2014%20Inch%20Space%20Black/thumbnail.png',
   images: [],
   availabilityStatus: 'In Stock',
   warrantyInformation: '',
