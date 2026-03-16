@@ -129,6 +129,7 @@ Handled in `ProductModel.fromJson` with sensible defaults:
 With more time, I would improve:
 
 - **Domain layer:** Add use cases (e.g. `GetProductsUseCase`) and repository interfaces for full clean architecture
+- **Theme:** Better custom animations with better optimization (I was not the most productive in this few hours)
 - **Dependency injection:** Use `get_it` or `injectable` instead of manual constructor injection
 - **Search + category:** Currently does client-side filtering when both are active. Ideally the API would support this natively
 - **Offline support depth:** Currently only caches the first page of products and categories. Could cache all paginated pages and individual product details

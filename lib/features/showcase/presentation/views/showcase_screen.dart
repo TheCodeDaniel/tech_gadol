@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tech_gadol/core/theme/dark_theme.dart';
-import 'package:tech_gadol/core/theme/light_theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tech_gadol/core/theme/theme_cubit.dart';
 import 'package:tech_gadol/core/widgets/app_search_bar.dart';
 import 'package:tech_gadol/core/widgets/category_chip.dart';
 import 'package:tech_gadol/core/widgets/empty_state.dart';
@@ -11,80 +11,97 @@ import 'package:tech_gadol/core/widgets/rating_bar.dart';
 import 'package:tech_gadol/core/widgets/shimmer_loading.dart';
 import 'package:tech_gadol/features/products/data/models/product_model.dart';
 
-class ShowcaseScreen extends StatefulWidget {
+class ShowcaseScreen extends StatelessWidget {
   const ShowcaseScreen({super.key});
 
   @override
-  State<ShowcaseScreen> createState() => _ShowcaseScreenState();
-}
-
-class _ShowcaseScreenState extends State<ShowcaseScreen> {
-  bool _isDark = false;
-
-  @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: _isDark ? DarkTheme.themeData : LightTheme.themeData,
-      child: Builder(
-        builder: (context) {
-          final theme = Theme.of(context);
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Component Showcase'),
-              actions: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(_isDark ? Icons.dark_mode : Icons.light_mode, size: 20, color: theme.colorScheme.onSurface),
-                    Switch(value: _isDark, onChanged: (v) => setState(() => _isDark = v)),
-                  ],
-                ),
-              ],
-            ),
-            body: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                _SectionHeader('SearchBar'),
-                AppSearchBar(onChanged: (_) {}),
-                const SizedBox(height: 24),
+    final themeCubit = context.watch<ThemeCubit>();
+    final isDark = themeCubit.isDark(context);
 
-                _SectionHeader('CategoryChip'),
-                _CategoryChipShowcase(),
-                const SizedBox(height: 24),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Component Showcase'),
+        actions: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isDark
+                    ? Icons.dark_mode
+                    : Icons.light_mode,
+                size: 20,
+              ),
+              Switch(
+                value: isDark,
+                onChanged: (_) =>
+                    themeCubit.toggleTheme(context),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _SectionHeader('SearchBar'),
+          AppSearchBar(onChanged: (_) {}),
+          const SizedBox(height: 24),
 
-                _SectionHeader('ProductCard'),
-                ProductCard(product: _sampleProduct, onTap: () {}, enableHero: false),
-                const SizedBox(height: 8),
-                ProductCard(product: _sampleProduct, onTap: () {}, isSelected: true, enableHero: false),
-                const SizedBox(height: 8),
-                ProductCard(product: _outOfStockProduct, onTap: () {}, enableHero: false),
-                const SizedBox(height: 8),
-                ProductCard(product: _noPriceProduct, onTap: () {}, enableHero: false),
-                const SizedBox(height: 24),
+          _SectionHeader('CategoryChip'),
+          _CategoryChipShowcase(),
+          const SizedBox(height: 24),
 
-                _SectionHeader('PriceTag'),
-                _PriceTagShowcase(),
-                const SizedBox(height: 24),
+          _SectionHeader('ProductCard'),
+          ProductCard(
+            product: _sampleProduct,
+            onTap: () {},
+            enableHero: false,
+          ),
+          const SizedBox(height: 8),
+          ProductCard(
+            product: _sampleProduct,
+            onTap: () {},
+            isSelected: true,
+            enableHero: false,
+          ),
+          const SizedBox(height: 8),
+          ProductCard(
+            product: _outOfStockProduct,
+            onTap: () {},
+            enableHero: false,
+          ),
+          const SizedBox(height: 8),
+          ProductCard(
+            product: _noPriceProduct,
+            onTap: () {},
+            enableHero: false,
+          ),
+          const SizedBox(height: 24),
 
-                _SectionHeader('RatingBar'),
-                _RatingBarShowcase(),
-                const SizedBox(height: 24),
+          _SectionHeader('PriceTag'),
+          _PriceTagShowcase(),
+          const SizedBox(height: 24),
 
-                _SectionHeader('ShimmerLoading'),
-                const SizedBox(height: 200, child: ShimmerLoading(itemCount: 2)),
-                const SizedBox(height: 24),
+          _SectionHeader('RatingBar'),
+          _RatingBarShowcase(),
+          const SizedBox(height: 24),
 
-                _SectionHeader('ErrorState'),
-                ErrorState(onRetry: () {}),
-                const SizedBox(height: 24),
+          _SectionHeader('ShimmerLoading'),
+          const SizedBox(
+            height: 200,
+            child: ShimmerLoading(itemCount: 2),
+          ),
+          const SizedBox(height: 24),
 
-                _SectionHeader('EmptyState'),
-                const EmptyState(),
-                const SizedBox(height: 32),
-              ],
-            ),
-          );
-        },
+          _SectionHeader('ErrorState'),
+          ErrorState(onRetry: () {}),
+          const SizedBox(height: 24),
+
+          _SectionHeader('EmptyState'),
+          const EmptyState(),
+          const SizedBox(height: 32),
+        ],
       ),
     );
   }
@@ -98,29 +115,42 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.headlineMedium,
+      ),
     );
   }
 }
 
 class _CategoryChipShowcase extends StatefulWidget {
   @override
-  State<_CategoryChipShowcase> createState() => _CategoryChipShowcaseState();
+  State<_CategoryChipShowcase> createState() =>
+      _CategoryChipShowcaseState();
 }
 
-class _CategoryChipShowcaseState extends State<_CategoryChipShowcase> {
+class _CategoryChipShowcaseState
+    extends State<_CategoryChipShowcase> {
   String? _selected;
 
   @override
   Widget build(BuildContext context) {
-    final categories = ['electronics', 'smart-phones', 'laptops', 'fragrances'];
+    final categories = [
+      'electronics',
+      'smart-phones',
+      'laptops',
+      'fragrances',
+    ];
     return Wrap(
       spacing: 8,
       children: categories.map((c) {
         return CategoryChip(
           label: c,
           isSelected: _selected == c,
-          onTap: () => setState(() => _selected = _selected == c ? null : c),
+          onTap: () => setState(
+            () => _selected =
+                _selected == c ? null : c,
+          ),
         );
       }).toList(),
     );
@@ -139,7 +169,10 @@ class _PriceTagShowcase extends StatelessWidget {
         const SizedBox(height: 12),
         const Text('With discount (large):'),
         const SizedBox(height: 4),
-        PriceTag(product: _sampleProduct, large: true),
+        PriceTag(
+          product: _sampleProduct,
+          large: true,
+        ),
         const SizedBox(height: 12),
         const Text('No discount:'),
         const SizedBox(height: 4),
@@ -167,7 +200,11 @@ class _RatingBarShowcase extends StatelessWidget {
         SizedBox(height: 8),
         RatingBar(rating: 0.0),
         SizedBox(height: 8),
-        RatingBar(rating: 4.2, size: 24, showLabel: false),
+        RatingBar(
+          rating: 4.2,
+          size: 24,
+          showLabel: false,
+        ),
       ],
     );
   }
@@ -184,7 +221,9 @@ const _sampleProduct = ProductModel(
   rating: 4.7,
   stock: 42,
   brand: 'Apple',
-  thumbnail: 'https://cdn.dummyjson.com/products/images/smartphones/iPhone%206/thumbnail.png',
+  thumbnail:
+      'https://cdn.dummyjson.com/products/images/'
+      'smartphones/iPhone%206/thumbnail.png',
   images: [],
   availabilityStatus: 'In Stock',
   warrantyInformation: '1 year',
@@ -203,7 +242,9 @@ const _outOfStockProduct = ProductModel(
   rating: 4.3,
   stock: 0,
   brand: 'Samsung',
-  thumbnail: 'https://cdn.dummyjson.com/products/images/smartphones/Samsung%20Galaxy%20S24/thumbnail.png',
+  thumbnail:
+      'https://cdn.dummyjson.com/products/images/'
+      'smartphones/Samsung%20Galaxy%20S24/thumbnail.png',
   images: [],
   availabilityStatus: 'Out of Stock',
   warrantyInformation: '',
@@ -222,8 +263,10 @@ const _noDiscountProduct = ProductModel(
   rating: 4.9,
   stock: 100,
   brand: 'Apple',
-  thumbnail: 'https://cdn.dummyjson.com/products/images/'
-      'laptops/Apple%20MacBook%20Pro%2014%20Inch%20Space%20Black/thumbnail.png',
+  thumbnail:
+      'https://cdn.dummyjson.com/products/images/'
+      'laptops/Apple%20MacBook%20Pro%2014%20Inch'
+      '%20Space%20Black/thumbnail.png',
   images: [],
   availabilityStatus: 'In Stock',
   warrantyInformation: '',
