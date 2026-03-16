@@ -61,11 +61,8 @@ class ProductModel extends Equatable {
       debugPrint('[WARNING] Product ${json['id']}: Missing or invalid thumbnail URL');
     }
 
-    final rawImages = (json['images'] as List<dynamic>?)
-            ?.map((e) => e as String)
-            .where((url) => _isValidUrl(url))
-            .toList() ??
-        [];
+    final rawImages =
+        (json['images'] as List<dynamic>?)?.map((e) => e as String).where((url) => _isValidUrl(url)).toList() ?? [];
     if (rawImages.isEmpty) {
       debugPrint('[WARNING] Product ${json['id']}: No valid image URLs');
     }
@@ -109,20 +106,14 @@ class ProductsResponse {
   final int skip;
   final int limit;
 
-  const ProductsResponse({
-    required this.products,
-    required this.total,
-    required this.skip,
-    required this.limit,
-  });
+  const ProductsResponse({required this.products, required this.total, required this.skip, required this.limit});
 
   bool get hasMore => skip + limit < total;
 
   factory ProductsResponse.fromJson(Map<String, dynamic> json) {
     return ProductsResponse(
-      products: (json['products'] as List<dynamic>?)
-              ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
+      products:
+          (json['products'] as List<dynamic>?)?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>)).toList() ??
           [],
       total: (json['total'] as num?)?.toInt() ?? 0,
       skip: (json['skip'] as num?)?.toInt() ?? 0,

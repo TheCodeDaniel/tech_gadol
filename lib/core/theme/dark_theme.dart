@@ -36,11 +36,7 @@ class DarkTheme {
       backgroundColor: AppColors.darkSurfaceVariant,
       selectedColor: AppColors.primaryLight,
       labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-      secondaryLabelStyle: const TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-        color: Colors.black,
-      ),
+      secondaryLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.black),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       side: BorderSide.none,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -48,68 +44,27 @@ class DarkTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColors.darkSurfaceVariant,
-      hintStyle: const TextStyle(
-        color: AppColors.darkOnSurfaceVariant,
-        fontSize: 14,
-      ),
+      hintStyle: const TextStyle(color: AppColors.darkOnSurfaceVariant, fontSize: 14),
       prefixIconColor: AppColors.darkOnSurfaceVariant,
       suffixIconColor: AppColors.darkOnSurfaceVariant,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.primaryLight, width: 1.5),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
-    dividerTheme: const DividerThemeData(
-      color: AppColors.darkDivider,
-      thickness: 1,
-    ),
+    dividerTheme: const DividerThemeData(color: AppColors.darkDivider, thickness: 1),
     textTheme: const TextTheme(
-      headlineLarge: TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
-        color: AppColors.darkOnSurface,
-      ),
-      headlineMedium: TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        color: AppColors.darkOnSurface,
-      ),
-      titleLarge: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-        color: AppColors.darkOnSurface,
-      ),
-      titleMedium: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: AppColors.darkOnSurface,
-      ),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        color: AppColors.darkOnSurface,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: AppColors.darkOnSurface,
-      ),
-      bodySmall: TextStyle(
-        fontSize: 12,
-        color: AppColors.darkOnSurfaceVariant,
-      ),
-      labelLarge: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: AppColors.primaryLight,
-      ),
+      headlineLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.darkOnSurface),
+      headlineMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.darkOnSurface),
+      titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.darkOnSurface),
+      titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.darkOnSurface),
+      bodyLarge: TextStyle(fontSize: 16, color: AppColors.darkOnSurface),
+      bodyMedium: TextStyle(fontSize: 14, color: AppColors.darkOnSurface),
+      bodySmall: TextStyle(fontSize: 12, color: AppColors.darkOnSurfaceVariant),
+      labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primaryLight),
     ),
   );
 }
